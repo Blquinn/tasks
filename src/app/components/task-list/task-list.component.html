@@ -1,0 +1,10 @@
+<div id="task-list-container">
+  <ul class="task-list">
+    <li *ngFor="let task of tasks" class="task-item">{{task}}</li>
+  </ul>
+
+  <input #newTask
+    (keyup.enter)="addTask(newTask.value)"
+    [(ngModel)]="newTaskValue">
+  <button (click)="addTask(newTask.value)">+</button>
+</div>
