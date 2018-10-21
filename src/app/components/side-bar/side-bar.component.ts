@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {TaskList} from '../../models/taskList';
 
 @Component({
   selector: 'app-side-bar',
@@ -7,11 +8,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SideBarComponent implements OnInit {
 
-  todoLists = ['Matador', 'Personal'];
+  active?: TaskList;
+
+  @Input() taskLists: Array<TaskList>;
+  @Output() activeList: EventEmitter<TaskList> = new EventEmitter();
 
   constructor() { }
 
   ngOnInit() {
+  }
+
+  activateTaskList(list: TaskList) {
+    this.active = list;
+    this.activeList.emit(list);
   }
 
 }

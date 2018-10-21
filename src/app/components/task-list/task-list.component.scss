@@ -4,9 +4,58 @@ app-task-list {
 }
 
 #task-list-container {
-  margin-top: 10em;
+  margin-left: 1em;
+  overflow: hidden;
+}
+
+.tasks-header {
+  margin-left: 1em;
+  display: inline;
+}
+
+.completed-tasks-header {
+  margin-top: 1em;
+}
+
+.task-list {
+  list-style-type: none;
 }
 
 .task-item {
-  color: white;
+  height: 2em;
+}
+
+#new-task-input {
+  margin-left: 2em;
+}
+
+.edit-btn {
+  margin-left: 1em;
+  cursor: pointer;
+}
+
+.delete-btn {
+  margin-left: .25em;
+  cursor: pointer;
+}
+
+.un-check-link, .task-chk {
+  cursor: pointer;
+  margin-right: 1em;
+}
+
+.active-task-list {
+  margin-right: 1em;
+}
+
+.completed-tasks-container {
+  margin-top: 2em;
+}
+
+.completed-task {
+  text-decoration: line-through;
+}
+
+.top-bar {
+  margin-bottom: 1em;
 }

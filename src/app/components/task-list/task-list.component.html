@@ -1,10 +1,39 @@
 <div id="task-list-container">
-  <ul class="task-list">
-    <li *ngFor="let task of tasks" class="task-item">{{task}}</li>
-  </ul>
+  <div class="top-bar">
+    <!--<h4 class="tasks-header">Tasks</h4>-->
+    <button mat-button (click)="openAddTaskDialog()">
+      Add Task
+      <i class="material-icons">add</i>
+    </button>
+  </div>
 
-  <input #newTask
-    (keyup.enter)="addTask(newTask.value)"
-    [(ngModel)]="newTaskValue">
-  <button (click)="addTask(newTask.value)">+</button>
+  <div class="active-task-list">
+    <mat-accordion>
+      <app-task-item
+        *ngFor="let task of activeList.tasks"
+        [task]="task"
+        (taskCompleted)="onTaskCompleted(task)"></app-task-item>
+    </mat-accordion>
+  </div>
+
+  <div class="completed-tasks-container active-task-list" *ngIf="activeList.completedTasks.length > 0">
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Completed Tasks</mat-panel-title>
+        </mat-expansion-panel-header>
+            <mat-accordion>
+              <app-task-item
+                *ngFor="let task of activeList.completedTasks"
+                [task]="task"
+                (taskCompleted)="onTaskCompleted(task)"></app-task-item>
+            </mat-accordion>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+
 </div>
+
+<app-task-detail
+  *ngIf="editingTask"
+  [task]="editingTask"></app-task-detail>

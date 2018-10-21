@@ -1,0 +1,23 @@
+.task-detail-container {
+  background-color: azure;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  float: right;
+  max-width: 75%;
+  width: 25em;
+}
+
+.back-btn {
+  color: white;
+  font-size: 2em;
+  margin-left: .5em;
+}
+
+.task-title {
+  //display: inline;
+  color: saddlebrown;
+  margin-left: 4em;
+  padding-left: 1em;
+}

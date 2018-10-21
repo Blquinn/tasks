@@ -1,7 +1,22 @@
 #side-bar {
+  margin-left: 1em;
+  margin-top: 1em;
+  margin-right: 1em;
+}
 
+.task-lists-header {
+  //color: white;
+}
+
+#side-bar-list {
+  list-style-type: none;
 }
 
 #side-bar-list li {
-  color: aliceblue;
+  //color: aliceblue;
 }
+
+.active {
+  border-bottom: 2px solid;
+}
+

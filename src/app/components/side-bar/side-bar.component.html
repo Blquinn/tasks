@@ -1,5 +1,9 @@
 <div id="side-bar">
-  <ul id="side-bar-list">
-    <li *ngFor="let listName of todoLists">{{ listName }}</li>
-  </ul>
+  <h4 class="task-lists-header">Task Lists</h4>
+  <mat-list>
+    <mat-list-item *ngFor="let list of taskLists">
+      <button mat-button [class.active]="active?.id === list.id"
+        (click)="activateTaskList(list)">{{list.name}}</button>
+    </mat-list-item>
+  </mat-list>
 </div>

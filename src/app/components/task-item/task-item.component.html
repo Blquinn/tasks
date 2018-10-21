@@ -1,0 +1,68 @@
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title [class.strike-through]="task.completed">
+      {{task.title}}
+    </mat-panel-title>
+    <mat-panel-description>{{task.shortDescription()}}</mat-panel-description>
+  </mat-expansion-panel-header>
+
+  <div *ngIf="!task.completed" class="completed-btn">
+    <button mat-button
+            (click)="onTaskChecked(task)"
+            color="alert">Mark Complete</button>
+  </div>
+
+  <div>
+    <mat-form-field>
+      <input placeholder="Task" type="text" title="Title"
+             value="{{task.title}}" matInput
+             [(ngModel)]="task.title" ></mat-form-field>
+  </div>
+
+  <div>
+    <mat-form-field class="task-description">
+      <textarea type="text" title="Description"
+                placeholder="Description"
+                value="{{task.description}}"
+                matInput
+                [(ngModel)]="task.description"></textarea>
+    </mat-form-field>
+  </div>
+
+  <div>
+    <mat-form-field>
+      <input matInput
+             [(ngModel)]="task.dueDate"
+             [matDatepicker]="picker"
+             placeholder="Choose a due date">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </div>
+
+  <div>
+    <p>Sub-tasks: <span *ngIf="task.subTasks.length == 0">None</span></p>
+
+    <div class="sub-task-container">
+      <ul class="sub-task-list">
+        <li *ngFor="let subTask of task.subTasks">
+          <mat-checkbox
+            [checked]="subTask.completed"
+            [(ngModel)]="subTask.completed">{{subTask.title}}</mat-checkbox>
+        </li>
+      </ul>
+      <mat-form-field *ngIf="!task.completed">
+        <input type="text" matInput placeholder="Add Sub-task (Press enter)"
+               (keyup.enter)="onSubTaskKey($event)"
+               [(ngModel)]="subTaskEditField">
+      </mat-form-field>
+
+    </div>
+  </div>
+
+  <div *ngIf="!task.completed">
+    <button mat-button class="save-btn"
+            (click)="onSave()"
+            color="alert">Save</button>
+  </div>
+</mat-expansion-panel>

@@ -13,10 +13,10 @@ function createWindow() {
 
   // Create the browser window.
   win = new BrowserWindow({
-    x: 0,
-    y: 0,
-    width: size.width,
-    height: size.height
+    // x: 0,
+    // y: 0,
+    width: size.width / 2,
+    height: size.height / 2
   });
 
   if (serve) {

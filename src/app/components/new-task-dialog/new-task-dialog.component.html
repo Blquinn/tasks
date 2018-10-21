@@ -1,0 +1,23 @@
+<h4>Add a new task</h4>
+<mat-form-field>
+  <input type="text" matInput placeholder="Task" [(ngModel)]="newTask.title">
+</mat-form-field>
+
+<mat-form-field>
+  <textarea matInput placeholder="Description"
+    [(ngModel)]="newTask.description"></textarea>
+</mat-form-field>
+
+<mat-form-field>
+  <input matInput
+         [matDatepicker]="picker"
+         placeholder="Choose a due date"
+         [(ngModel)]="newTask.dueDate">
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+</mat-form-field>
+
+<mat-dialog-actions>
+  <button mat-button (click)="closeDialog()">Cancel</button>
+  <button mat-button (click)="closeDialog()">Submit</button>
+</mat-dialog-actions>
