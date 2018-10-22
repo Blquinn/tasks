@@ -77,7 +77,9 @@ export class HomeComponent implements OnInit {
       ], [
         new Task(1, 'DO some other personal thing',
           `Go to a store somewhere and buy a costume, I mean how long of a description could you realy write about this topic?`,
-          true, new Date(), []),
+          true, new Date(), [
+            new SubTask(0, 'Do something', false),
+          ]),
         new Task(2, 'FooBar', null, true, null, []),
       ]);
 

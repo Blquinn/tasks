@@ -2,6 +2,25 @@
   width: 75%;
 }
 
+.description-header {
+  min-width: 0;
+}
+
+.description-inner {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-panel-title {
+  min-width: 10em;
+}
+
+.task-panel-title-inner {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 .sub-task-container {
   margin-left: 1em;
@@ -13,15 +32,8 @@
   margin-bottom: 0;
 }
 
-.add-sub-task-field {
-}
-
 .completed-btn {
   margin-bottom: 1em;
-}
-
-.save-btn {
-
 }
 
 .strike-through {

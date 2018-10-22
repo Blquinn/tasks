@@ -1,13 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import "~bootstrap/dist/css/bootstrap.min.css";
 @import "~font-awesome/css/font-awesome.min.css";
 @import "assets/css/material-custom";
-
-
-//* {
-//  border: 1px solid #f00 !important;
-//}
+@import "~material-design-icons/iconfont/material-icons.css";
 
 html, body {
   margin: 0;
@@ -28,3 +23,20 @@ body { margin: 0; font-family: 'Roboto', sans-serif; }
 button:focus {
   outline: none;
 }
+
+//.sidenav-container .mat-drawer-content {
+//  margin-left: $sidenav-width !important;
+//}
+
+//@media (max-width: 1000px) {
+
+//$sidenav-width: 11em;
+//
+//.mat-sidenav {
+//  width: $sidenav-width;
+//}
+//.mat-drawer-content {
+//  margin-left: $sidenav-width !important;
+//}
+//}
+

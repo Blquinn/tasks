@@ -1,9 +1,13 @@
 <mat-expansion-panel #itemExpPanel>
   <mat-expansion-panel-header>
-    <mat-panel-title [class.strike-through]="task.completed">
-      {{task.title}}
+    <mat-panel-title [class.strike-through]="task.completed" class="task-panel-title">
+      <div class="task-panel-title-inner">
+        {{task.title}}
+      </div>
     </mat-panel-title>
-    <mat-panel-description>{{task.shortDescription()}}</mat-panel-description>
+    <mat-panel-description class="description-header">
+      <div class="description-inner">{{task.description}}</div>
+    </mat-panel-description>
   </mat-expansion-panel-header>
 
   <div *ngIf="!task.completed" class="completed-btn">
@@ -16,6 +20,7 @@
     <mat-form-field>
       <input placeholder="Task" type="text" title="Title"
              value="{{task.title}}" matInput
+             [readonly]="task.completed"
              [(ngModel)]="task.title" ></mat-form-field>
   </div>
 
@@ -24,6 +29,7 @@
       <textarea type="text" title="Description"
                 placeholder="Description"
                 value="{{task.description}}"
+                [readonly]="task.completed"
                 matInput
                 [(ngModel)]="task.description"></textarea>
     </mat-form-field>
@@ -32,10 +38,11 @@
   <div>
     <mat-form-field>
       <input matInput
+             [readonly]="task.completed"
              [(ngModel)]="task.dueDate"
              [matDatepicker]="picker"
              placeholder="Choose a due date">
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker-toggle matSuffix [for]="picker" *ngIf="!task.completed"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
   </div>

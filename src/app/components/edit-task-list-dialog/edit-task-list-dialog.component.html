@@ -1,0 +1,7 @@
+<mat-form-field>
+  <input type="text" matInput [(ngModel)]="taskList.name" (keyup.enter)="onClose()">
+</mat-form-field>
+
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="true">Save</button>
+</mat-dialog-actions>

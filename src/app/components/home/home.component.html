@@ -1,13 +1,11 @@
-<mat-drawer-container class="app-container">
-  <mat-drawer mode="side" opened>
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav mode="side" opened>
     <app-side-bar
       [taskLists]="taskLists"
       (activeList)="onActiveList($event)"></app-side-bar>
-  </mat-drawer>
-  <mat-drawer-content class="hide-scroll">
-    <div class="enable-scroll">
+  </mat-sidenav>
+  <mat-sidenav-content class="hide-scroll sidenav-content">
       <h4 *ngIf="!activeTasks" class="task-lists-header">Select a task list</h4>
       <app-task-list *ngIf="activeTasks" [activeList]="activeTasks"></app-task-list>
-    </div>
-  </mat-drawer-content>
-</mat-drawer-container>
+  </mat-sidenav-content>
+</mat-sidenav-container>

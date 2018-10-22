@@ -2,6 +2,8 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {TaskList} from '../../models/taskList';
 import {NewTaskListComponent} from '../new-task-list/new-task-list.component';
 import {MatDialog} from '@angular/material';
+import {EditTaskListDialogComponent} from '../edit-task-list-dialog/edit-task-list-dialog.component';
+import {DeleteTaskListDialogComponent} from '../delete-task-list-dialog/delete-task-list-dialog.component';
 
 @Component({
   selector: 'app-side-bar',
@@ -46,4 +48,29 @@ export class SideBarComponent implements OnInit {
       }
     });
   }
+
+  openEditTaskListDialog(list: TaskList) {
+    const dialogRef = this.dialog.open(EditTaskListDialogComponent, {
+      width: '25em',
+      data: list,
+    });
+
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+
+    });
+  }
+
+  openDeleteTaskListDialog(list: TaskList) {
+    const dialogRef = this.dialog.open(DeleteTaskListDialogComponent, {
+      width: '25em',
+      data: list,
+    });
+
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result === true) {
+        this.taskLists = this.taskLists.filter(l => l.id !== list.id);
+      }
+    });
+  }
+
 }

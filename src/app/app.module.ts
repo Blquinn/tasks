@@ -22,10 +22,12 @@ import {SideBarComponent} from './components/side-bar/side-bar.component';
 import {TaskListComponent} from './components/task-list/task-list.component';
 import {TaskDetailComponent} from './components/task-detail/task-detail.component';
 import {MaterialComponentsModule} from './material-components.module';
-import {NativeDateAdapter} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialogRef, NativeDateAdapter} from '@angular/material';
 import {NewTaskDialogComponent} from './components/new-task-dialog/new-task-dialog.component';
 import { TaskItemComponent } from './components/task-item/task-item.component';
 import { NewTaskListComponent } from './components/new-task-list/new-task-list.component';
+import { DeleteTaskListDialogComponent } from './components/delete-task-list-dialog/delete-task-list-dialog.component';
+import { EditTaskListDialogComponent } from './components/edit-task-list-dialog/edit-task-list-dialog.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -43,10 +45,14 @@ export function HttpLoaderFactory(http: HttpClient) {
     NewTaskDialogComponent,
     TaskItemComponent,
     NewTaskListComponent,
+    DeleteTaskListDialogComponent,
+    EditTaskListDialogComponent,
   ],
   entryComponents: [
     NewTaskDialogComponent,
     NewTaskListComponent,
+    DeleteTaskListDialogComponent,
+    EditTaskListDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -62,7 +68,12 @@ export function HttpLoaderFactory(http: HttpClient) {
       }
     }),
   ],
-  providers: [ElectronService, NativeDateAdapter],
+  providers: [
+    ElectronService,
+    NativeDateAdapter,
+    { provide: MAT_DIALOG_DATA, useValue: {} },
+    { provide: MatDialogRef, useValue: {} },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

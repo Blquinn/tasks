@@ -2,6 +2,17 @@
   <h4 class="task-lists-header">Task Lists</h4>
   <mat-list>
     <mat-list-item *ngFor="let list of taskLists">
+      <div>
+        <mat-menu #appMenu="matMenu">
+          <button mat-menu-item (click)="openEditTaskListDialog(list)">Edit</button>
+          <button mat-menu-item (click)="openDeleteTaskListDialog(list)">Delete</button>
+        </mat-menu>
+
+        <button mat-icon-button [matMenuTriggerFor]="appMenu">
+          <i class="material-icons list-drop-down" title="Show actions">arrow_drop_down</i>
+        </button>
+      </div>
+
       <button mat-button [class.active]="active?.id === list.id"
         (click)="activateTaskList(list)">{{list.name}}</button>
     </mat-list-item>
