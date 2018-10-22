@@ -14,21 +14,6 @@ export class TaskListComponent implements OnInit {
 
   @Input() activeList: TaskListLists;
 
-  // tasks = [
-  //   new Task(0, 'Do Homework', null, false, null, [
-  //     new SubTask(0, 'Do math', false),
-  //     new SubTask(1, 'Do english', false)
-  //   ]),
-  //   new Task(1, 'Get a costume',
-  //     `Go to a store somewhere and buy a costume, I mean how long of a description could you realy write about this topic?`,
-  //     false, new Date(), []),
-  //   new Task(2, 'FooBar', null, false, null, []),
-  // ];
-  //
-  // completedTasks: Array<Task> = [
-  //   new Task(3, 'Other foo', null, false, null, []),
-  // ];
-
   editingTask?: Task;
 
   constructor(private dialog: MatDialog) { }

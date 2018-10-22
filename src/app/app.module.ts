@@ -25,6 +25,7 @@ import {MaterialComponentsModule} from './material-components.module';
 import {NativeDateAdapter} from '@angular/material';
 import {NewTaskDialogComponent} from './components/new-task-dialog/new-task-dialog.component';
 import { TaskItemComponent } from './components/task-item/task-item.component';
+import { NewTaskListComponent } from './components/new-task-list/new-task-list.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -41,9 +42,11 @@ export function HttpLoaderFactory(http: HttpClient) {
     TaskDetailComponent,
     NewTaskDialogComponent,
     TaskItemComponent,
+    NewTaskListComponent,
   ],
   entryComponents: [
     NewTaskDialogComponent,
+    NewTaskListComponent,
   ],
   imports: [
     BrowserModule,

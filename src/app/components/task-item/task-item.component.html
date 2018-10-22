@@ -1,4 +1,4 @@
-<mat-expansion-panel>
+<mat-expansion-panel #itemExpPanel>
   <mat-expansion-panel-header>
     <mat-panel-title [class.strike-through]="task.completed">
       {{task.title}}
@@ -62,7 +62,7 @@
 
   <div *ngIf="!task.completed">
     <button mat-button class="save-btn"
-            (click)="onSave()"
+            (click)="itemExpPanel.expanded = false; onSave()"
             color="alert">Save</button>
   </div>
 </mat-expansion-panel>

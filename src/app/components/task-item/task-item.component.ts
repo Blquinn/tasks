@@ -21,6 +21,7 @@ export class TaskItemComponent implements OnInit {
   }
 
   onTaskChecked() {
+    this.task.completed = true;
     this.taskCompleted.emit(this.task);
   }
 
