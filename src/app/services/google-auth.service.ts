@@ -4,7 +4,6 @@ import {parse} from 'url';
 import {remote} from 'electron';
 import axios from 'axios';
 import qs from 'qs';
-import {OAuth2Client} from 'google-auth-library';
 
 const GOOGLE_AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
 const GOOGLE_TOKEN_URL = 'https://www.googleapis.com/oauth2/v4/token';
@@ -13,7 +12,6 @@ const GOOGLE_CLIENT_ID = '942814386422-453sqea4gnbqidoc2r0g0jsc9bnsd1gs.apps.goo
 const GOOGLE_BUNDLE_ID = 'org.github.blquinn';
 const GOOGLE_REDIRECT_URI = `com.googleusercontent.apps.942814386422-453sqea4gnbqidoc2r0g0jsc9bnsd1gs:/oauth2callback`;
 
-const KEYTAR_SERVICE = 'tasks-electron';
 const CREDENTIALS_KEY = 'credentials';
 
 export interface Credentials {
@@ -114,33 +112,34 @@ export class GoogleAuthService {
     return response.data;
   }
 
-  async googleSignIn(): Promise<GoogleUser> {
+  async googleSignIn(): Promise<Credentials> {
     const code = await this.signInWithPopup();
     const tokens = await this.fetchAccessTokens(code);
-    const {id, email, name} = await this.fetchGoogleProfile(tokens.access_token);
-    const d = {
-      id,
-      email,
-      displayName: name,
-      credentials: tokens,
-    };
-    localStorage.setItem(CREDENTIALS_KEY, JSON.stringify(d));
-    return d;
+    // const {id, email, name} = await this.fetchGoogleProfile(tokens.access_token);
+    // const d: GoogleUser = {
+    //   id,
+    //   email,
+    //   displayName: name,
+    //   credentials: tokens,
+    // };
+    localStorage.setItem(CREDENTIALS_KEY, JSON.stringify(tokens));
+    return tokens;
   }
 
-  async getCredentials(): Promise<GoogleUser> {
-    const creds = localStorage.getItem(CREDENTIALS_KEY);
-    if (creds !== null) {
-      return JSON.parse(creds);
-    }
+  async getCredentials(): Promise<Credentials> {
+    // const creds = localStorage.getItem(CREDENTIALS_KEY);
+    // if (creds !== null) {
+    //   return JSON.parse(creds);
+    // }
+
     return await this.googleSignIn();
   }
 
-  async getOAuthClient(): Promise<OAuth2Client> {
-    const creds = await this.getCredentials();
-    const client = new OAuth2Client();
-    client.setCredentials(creds.credentials);
-    return client;
-  }
+  // async getOAuthClient(): Promise<OAuth2Client> {
+  //   const creds = await this.getCredentials();
+  //   const client = new OAuth2Client();
+  //   client.setCredentials(creds.credentials);
+  //   return client;
+  // }
 
 }

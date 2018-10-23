@@ -5,8 +5,8 @@
         {{task.title}}
       </div>
     </mat-panel-title>
-    <mat-panel-description class="description-header">
-      <div class="description-inner">{{task.description}}</div>
+    <mat-panel-description class="notes-header">
+      <div class="notes-inner">{{task.notes}}</div>
     </mat-panel-description>
   </mat-expansion-panel-header>
 
@@ -17,28 +17,25 @@
   </div>
 
   <div>
-    <mat-form-field>
+    <mat-form-field class="task-title">
       <input placeholder="Task" type="text" title="Title"
              value="{{task.title}}" matInput
-             [readonly]="task.completed"
              [(ngModel)]="task.title" ></mat-form-field>
   </div>
 
   <div>
-    <mat-form-field class="task-description">
-      <textarea type="text" title="Description"
-                placeholder="Description"
-                value="{{task.description}}"
-                [readonly]="task.completed"
+    <mat-form-field class="task-notes">
+      <textarea type="text" title="Notes"
+                placeholder="Notes"
+                value="{{task.notes}}"
                 matInput
-                [(ngModel)]="task.description"></textarea>
+                [(ngModel)]="task.notes"></textarea>
     </mat-form-field>
   </div>
 
   <div>
     <mat-form-field>
       <input matInput
-             [readonly]="task.completed"
              [(ngModel)]="task.dueDate"
              [matDatepicker]="picker"
              placeholder="Choose a due date">

@@ -3,8 +3,9 @@ import {TaskList} from '../../models/taskList';
 import {Task} from '../../models/task';
 import {SubTask} from '../../models/subTask';
 import {TaskListLists} from '../../models/taskListLists';
-import {GoogleAuthService} from '../../services/google-auth.service';
-import {OAuth2Client} from 'google-auth-library';
+import {GoogleTasksService} from '../../services/google-tasks.service';
+import {Observable, of} from 'rxjs';
+import {catchError, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -27,32 +28,43 @@ export class HomeComponent implements OnInit {
   activeList?: TaskList;
   activeTasks?: TaskListLists;
 
-  // oauthClient?: OAuth2Client;
-
-  constructor() {
+  constructor(private tasks: GoogleTasksService) {
   }
+
 
   ngOnInit() {
-    // this.googleAuth.getOAuthClient()
-    //   .then((client) => {
-    //     this.oauthClient = client;
-    //   })
-    //   .catch((error) => {
-    //     alert(error);
-    //   });
+    this.tasks.getTaskLists()
+      .pipe(
+        tap(tasks => {
+          console.log('recv task list');
+          console.log(tasks.map(t => new TaskList(0, t.title)));
+        }),
+        catchError(this.handleError('get task lists', []))
+      );
   }
 
-  // async getOAuthClient(): Promise<OAuth2Client> {
-  //   if (this.oauthClient == null) {
-  //     this.oauthClient = await this.googleAuth.getOAuthClient();
-  //     return this.oauthClient;
-  //   }
-  //   return this.oauthClient;
-  // }
+  private handleError<T> (operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      // TODO: send the error to remote logging infrastructure
+      console.error(error); // log to console instead
 
-  onActiveList(list: TaskList) {
-    this.activeList = list;
-    this.getTasks(list);
+      // TODO: better job of transforming error for user consumption
+      // this.log(`${operation} failed: ${error.message}`);
+
+      // Let the app keep running by returning an empty result.
+      return of(result as T);
+    };
+  }
+
+
+  onActiveList(list?: TaskList) {
+    if (list === null) {
+      this.activeList = null;
+      this.activeTasks = null;
+    } else {
+      this.activeList = list;
+      this.getTasks(list);
+    }
   }
 
   getTasks(list: TaskList) {
@@ -71,14 +83,15 @@ export class HomeComponent implements OnInit {
     } else if (list.name === this.taskLists[1].name) {
       tasks = new TaskListLists([
         new Task(0, 'Do Personal thing', null, false, null, [
-          new SubTask(0, 'Do math', false),
+          new SubTask(0, 'Do math', true),
           new SubTask(1, 'Do english', false)
         ]),
       ], [
         new Task(1, 'DO some other personal thing',
           `Go to a store somewhere and buy a costume, I mean how long of a description could you realy write about this topic?`,
           true, new Date(), [
-            new SubTask(0, 'Do something', false),
+            new SubTask(0, 'Do something', true),
+            new SubTask(1, 'Do something else', false),
           ]),
         new Task(2, 'FooBar', null, true, null, []),
       ]);

@@ -41,7 +41,7 @@ export class TaskListComponent implements OnInit {
     } else {
       maxTaskID = Math.max.apply(Math, this.activeList.tasks.concat(this.activeList.completedTasks).map(t => t.id));
     }
-    this.activeList.tasks.push(new Task(maxTaskID + 1, newTask.title, newTask.description, false, newTask.dueDate, []));
+    this.activeList.tasks.push(new Task(maxTaskID + 1, newTask.title, newTask.notes, false, newTask.dueDate, []));
   }
 
   onTaskCompleted(task: Task) {

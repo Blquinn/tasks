@@ -23,10 +23,8 @@
           <mat-panel-title>Completed Tasks</mat-panel-title>
         </mat-expansion-panel-header>
             <mat-accordion>
-              <app-task-item
-                *ngFor="let task of activeList.completedTasks"
-                [task]="task"
-                (taskCompleted)="onTaskCompleted(task)"></app-task-item>
+              <app-completed-task-item *ngFor="let task of activeList.completedTasks"
+                [task]="task"></app-completed-task-item>
             </mat-accordion>
       </mat-expansion-panel>
     </mat-accordion>

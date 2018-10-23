@@ -22,7 +22,7 @@ export class SideBarComponent implements OnInit {
   ngOnInit() {
   }
 
-  activateTaskList(list: TaskList) {
+  activateTaskList(list?: TaskList) {
     this.active = list;
     this.activeList.emit(list);
   }
@@ -56,7 +56,6 @@ export class SideBarComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result: boolean) => {
-
     });
   }
 
@@ -69,6 +68,12 @@ export class SideBarComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: boolean) => {
       if (result === true) {
         this.taskLists = this.taskLists.filter(l => l.id !== list.id);
+
+        if (this.taskLists.length > 0) {
+          this.activateTaskList(this.taskLists[0]);
+        } else {
+          this.activateTaskList(null);
+        }
       }
     });
   }

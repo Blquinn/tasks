@@ -1,11 +1,11 @@
 export class NewTask {
   title: string;
-  description?: string;
+  notes?: string;
   dueDate?: Date;
 
   constructor() {
     this.title = '';
-    this.description = null;
+    this.notes = null;
     this.dueDate = null;
   }
 }

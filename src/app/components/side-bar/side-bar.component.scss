@@ -1,12 +1,7 @@
 #side-bar {
-  margin-left: 1em;
   margin-top: 1em;
-  margin-right: 1em;
   text-align: center;
-}
-
-.task-lists-header {
-  //color: white;
+  width: 14em;
 }
 
 #side-bar-list {
@@ -15,12 +10,10 @@
 
 .list-drop-down {
   cursor: pointer;
-  //position: relative;
-  //width: 100%;
 }
 
-#side-bar-list li {
-  //color: aliceblue;
+.drop-down-btn {
+  width: inherit;
 }
 
 .active {
@@ -29,4 +22,15 @@
 
 .add-list-btn {
   margin-top: 1em;
+}
+
+.task-list-item {
+  min-width: 0;
+}
+
+.task-list-button {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 84%;
 }

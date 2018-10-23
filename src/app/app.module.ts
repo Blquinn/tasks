@@ -28,6 +28,7 @@ import { TaskItemComponent } from './components/task-item/task-item.component';
 import { NewTaskListComponent } from './components/new-task-list/new-task-list.component';
 import { DeleteTaskListDialogComponent } from './components/delete-task-list-dialog/delete-task-list-dialog.component';
 import { EditTaskListDialogComponent } from './components/edit-task-list-dialog/edit-task-list-dialog.component';
+import { CompletedTaskItemComponent } from './components/completed-task-item/completed-task-item.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -47,6 +48,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     NewTaskListComponent,
     DeleteTaskListDialogComponent,
     EditTaskListDialogComponent,
+    CompletedTaskItemComponent,
   ],
   entryComponents: [
     NewTaskDialogComponent,

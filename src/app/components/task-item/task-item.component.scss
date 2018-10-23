@@ -1,12 +1,16 @@
-.task-description {
+.task-notes {
   width: 75%;
 }
 
-.description-header {
+.notes-header {
   min-width: 0;
 }
 
-.description-inner {
+.task-title {
+  width: 75%;
+}
+
+.notes-inner {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
