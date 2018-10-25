@@ -1,8 +1,8 @@
 export interface GoogleTasksResponse {
   kind: string;
   etag: string;
-  nextPageToken: string;
-  items: Array<GoogleTask>;
+  nextPageToken?: string;
+  items?: Array<GoogleTask>;
 }
 
 export interface GoogleTask {

@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Task} from '../../models/task';
 import {SubTask} from '../../models/subTask';
+import {GoogleTasksService} from '../../services/google-tasks.service';
 
 @Component({
   selector: 'app-task-item',
@@ -15,7 +16,7 @@ export class TaskItemComponent implements OnInit {
 
   subTaskEditField = '';
 
-  constructor() { }
+  constructor(private googleTasks: GoogleTasksService) { }
 
   ngOnInit() {
   }
@@ -26,7 +27,10 @@ export class TaskItemComponent implements OnInit {
   }
 
   onSave() {
-    console.log('saving');
+    this.googleTasks.updateTask(this.task)
+      .subscribe(t => {
+        this.task = t;
+      });
   }
 
   onSubTaskKey(event: KeyboardEvent) {

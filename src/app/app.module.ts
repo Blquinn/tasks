@@ -19,7 +19,7 @@ import {WebviewDirective} from './directives/webview.directive';
 import {AppComponent} from './app.component';
 import {HomeComponent} from './components/home/home.component';
 import {SideBarComponent} from './components/side-bar/side-bar.component';
-import {TaskListComponent} from './components/task-list/task-list.component';
+import {CompletedTasksPipe, IncompleteTasksPipe, TaskListComponent} from './components/task-list/task-list.component';
 import {TaskDetailComponent} from './components/task-detail/task-detail.component';
 import {MaterialComponentsModule} from './material-components.module';
 import {MAT_DIALOG_DATA, MatDialogRef, NativeDateAdapter} from '@angular/material';
@@ -49,6 +49,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     DeleteTaskListDialogComponent,
     EditTaskListDialogComponent,
     CompletedTaskItemComponent,
+    CompletedTasksPipe,
+    IncompleteTasksPipe,
   ],
   entryComponents: [
     NewTaskDialogComponent,

@@ -5,7 +5,11 @@
       (activeList)="onActiveList($event)"></app-side-bar>
   </mat-sidenav>
   <mat-sidenav-content class="hide-scroll sidenav-content">
-      <h4 *ngIf="!activeTasks" class="task-lists-header">Select a task list</h4>
-      <app-task-list *ngIf="activeTasks" [activeList]="activeTasks"></app-task-list>
+      <div *ngIf="activeList !== undefined && activeList !== null; else noActiveList">
+        <app-task-list [activeList]="activeList"></app-task-list>
+      </div>
+      <ng-template #noActiveList>
+        <h4 class="task-lists-header">Select a task list</h4>
+      </ng-template>
   </mat-sidenav-content>
 </mat-sidenav-container>

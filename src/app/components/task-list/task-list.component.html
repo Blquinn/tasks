@@ -1,33 +1,34 @@
 <div id="task-list-container">
   <div class="top-bar">
-    <!--<h4 class="tasks-header">Tasks</h4>-->
     <button mat-button (click)="openAddTaskDialog()">
       Add Task
       <i class="material-icons">add</i>
     </button>
   </div>
 
-  <div class="active-task-list">
-    <mat-accordion>
-      <app-task-item
-        *ngFor="let task of activeList.tasks"
-        [task]="task"
-        (taskCompleted)="onTaskCompleted(task)"></app-task-item>
-    </mat-accordion>
-  </div>
+  <div *ngIf="activeList.tasks !== undefined && activeList.tasks !== null">
+      <div class="active-task-list">
+        <mat-accordion>
+          <app-task-item
+            *ngFor="let task of activeList.tasks | incompleteTaskPipe"
+            [task]="task"
+            (taskCompleted)="onTaskCompleted(task)"></app-task-item>
+        </mat-accordion>
+      </div>
 
-  <div class="completed-tasks-container active-task-list" *ngIf="activeList.completedTasks.length > 0">
-    <mat-accordion>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>Completed Tasks</mat-panel-title>
-        </mat-expansion-panel-header>
-            <mat-accordion>
-              <app-completed-task-item *ngFor="let task of activeList.completedTasks"
-                [task]="task"></app-completed-task-item>
-            </mat-accordion>
-      </mat-expansion-panel>
-    </mat-accordion>
+      <div class="completed-tasks-container active-task-list" *ngIf="(activeList.tasks | completedTaskPipe).length > 0">
+        <mat-accordion>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Completed Tasks</mat-panel-title>
+            </mat-expansion-panel-header>
+                <mat-accordion>
+                  <app-completed-task-item *ngFor="let task of (activeList.tasks | completedTaskPipe)"
+                    [task]="task"></app-completed-task-item>
+                </mat-accordion>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
   </div>
 
 </div>

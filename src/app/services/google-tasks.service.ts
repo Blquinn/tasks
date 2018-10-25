@@ -6,7 +6,7 @@ import {GoogleTaskListResponse} from '../models/googletasks/GoogleTaskList';
 import {catchError, flatMap, map, tap} from 'rxjs/operators';
 import {TaskList} from '../models/taskList';
 import {Task} from '../models/task';
-import {GoogleTasksResponse} from '../models/googletasks/GoogleTasks';
+import {GoogleTask, GoogleTasksResponse} from '../models/googletasks/GoogleTasks';
 import qs from 'qs';
 
 const BASE_URL = 'https://www.googleapis.com/tasks/v1';
@@ -46,7 +46,7 @@ export class GoogleTasksService {
     };
   }
 
-  private doRequest<T>(operation: string, path: string, query?: {}): Observable<T> {
+  private doRequest<T>(method: string, operation: string, path: string, query?: {}): Observable<T> {
     console.log('performing request to ' + path);
     return this.getCredentials()
       .pipe(
@@ -57,7 +57,7 @@ export class GoogleTasksService {
                 url += '?' + qs.stringify(query);
               }
             console.log(`Doing request to ${url}`);
-            return this.http.get<T>(url, {
+            return this.http.request<T>(method, url, {
               headers: {
                 Authorization: `${creds.token_type} ${creds.access_token}`,
               },
@@ -69,7 +69,7 @@ export class GoogleTasksService {
 
   getTaskLists(): Observable<Array<TaskList>> {
     console.log('retrieving task list');
-    return this.doRequest<GoogleTaskListResponse>('get task lists', 'users/@me/lists')
+    return this.doRequest<GoogleTaskListResponse>('GET', 'get task lists', 'users/@me/lists')
       .pipe(
         map(res => {
           return res.items.map(l => new TaskList(l.id, l.title, new Date(l.updated), l.selfLink));
@@ -77,19 +77,49 @@ export class GoogleTasksService {
       );
   }
 
-  getTasks(listID: string): Observable<Array<Task>> {
-    return this.doRequest<GoogleTasksResponse>('get tasks', `lists/${listID}/tasks`, {showCompleted: false})
+  private mapTask(taskList: TaskList, gt: GoogleTask): Task {
+    const completed = gt.status === 'complete';
+    const due = (gt.due === null || gt.due === undefined) ? null : new Date(gt.due);
+    return new Task(
+      taskList,
+      gt.id, gt.title, new Date(gt.updated),
+      gt.selfLink, gt.parent, gt.position, gt.status,
+      completed,
+      (gt.completed !== undefined && gt.completed !== null) ? new Date(gt.completed) : null,
+      gt.hidden, gt.links, [], gt.deleted, due, gt.notes);
+  }
+
+  getTasks(taskList: TaskList): Observable<Array<Task>> {
+    return this.doRequest<GoogleTasksResponse>('GET', 'get tasks', `lists/${taskList.id}/tasks`, {showCompleted: false})
       .pipe(
         map(res => {
+          if (res.items === undefined || res.items === null) { return []; }
           return res.items.map(gt => {
-            console.log(gt.status);
-            const completed = gt.status === 'complete';
-            const due = (gt.due === null || gt.due === undefined) ? null : new Date(gt.due);
-            return new Task(
-              gt.id, gt.title, new Date(gt.updated),
-              gt.selfLink, gt.parent, gt.position, gt.status,
-              completed, new Date(gt.completed), gt.hidden, gt.links, [], due, gt.notes);
+            return this.mapTask(taskList, gt);
           });
+        })
+      );
+  }
+
+  updateTask(task: Task): Observable<Task> {
+    console.log(task);
+    const googleTask: Partial<GoogleTask> = {
+      id: task.id,
+      title: task.title,
+      parent: task.parent,
+      position: task.position,
+      notes: task.notes,
+      status: task.completed === true ? 'completed' : 'needsAction',
+      due: (task.dueDate !== undefined && task.dueDate !== null) ? task.dueDate.toISOString() : null,
+      completed: (task.completedAt !== undefined && task.completedAt !== null) ? task.completedAt.toISOString() : null,
+      deleted: task.deleted,
+      hidden: task.hidden,
+      links: task.links
+    };
+    return this.doRequest<GoogleTask>('PATCH', 'update task', `lists/${task.taskList.id}/tasks/${task.id}`)
+      .pipe(
+        map(gTask => {
+          return this.mapTask(task.taskList, gTask);
         })
       );
   }

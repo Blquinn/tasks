@@ -1,9 +1,25 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, Pipe, PipeTransform} from '@angular/core';
 import {Task} from '../../models/task';
 import {MatDialog} from '@angular/material';
 import {NewTaskDialogComponent} from '../new-task-dialog/new-task-dialog.component';
 import {NewTask} from '../../models/newTask';
-import {TaskListLists} from '../../models/taskListLists';
+import {TaskList} from '../../models/taskList';
+
+
+@Pipe({name: 'completedTaskPipe'})
+export class CompletedTasksPipe implements PipeTransform {
+  transform(tasks: Array<Task>) {
+    return tasks.filter(t => t.completed === true);
+  }
+}
+
+@Pipe({name: 'incompleteTaskPipe'})
+export class IncompleteTasksPipe implements PipeTransform {
+  transform(tasks: Array<Task>) {
+    return tasks.filter(t => t.completed === false);
+  }
+}
+
 
 @Component({
   selector: 'app-task-list',
@@ -12,7 +28,7 @@ import {TaskListLists} from '../../models/taskListLists';
 })
 export class TaskListComponent implements OnInit {
 
-  @Input() activeList: TaskListLists;
+  @Input() activeList: TaskList;
 
   editingTask?: Task;
 
@@ -46,8 +62,7 @@ export class TaskListComponent implements OnInit {
   }
 
   onTaskCompleted(task: Task) {
-    this.activeList.tasks = this.activeList.tasks.filter(t => t.id !== task.id);
-    this.activeList.completedTasks.push(task);
+    task.completed = true;
   }
 
   onDeleteBtn(taskID: string) {

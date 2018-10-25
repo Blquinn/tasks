@@ -16,7 +16,7 @@ export class HomeComponent implements OnInit {
   taskLists: Array<TaskList>;
 
   activeList?: TaskList;
-  activeTasks?: TaskListLists;
+  // activeTasks?: TaskListLists;
 
   constructor(private tasks: GoogleTasksService) {
   }
@@ -47,16 +47,17 @@ export class HomeComponent implements OnInit {
   onActiveList(list?: TaskList) {
     if (list === null) {
       this.activeList = null;
-      this.activeTasks = null;
+      // this.activeTasks = null;
     } else {
       this.activeList = list;
-      this.tasks.getTasks(list.id).pipe(
+      this.tasks.getTasks(list).pipe(
         catchError(this.handleError('get tasks', []))
       ).subscribe((tasks: Array<Task>) => {
-        this.activeTasks = new TaskListLists(
-          tasks.filter(t => t.completed === false),
-          tasks.filter(t => t.completed === true),
-        );
+        list.tasks = tasks;
+        // this.activeTasks = new TaskListLists(
+        //   tasks.filter(t => t.completed === false),
+        //   tasks.filter(t => t.completed === true),
+        // );
       });
     }
   }

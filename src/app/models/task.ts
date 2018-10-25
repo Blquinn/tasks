@@ -1,36 +1,43 @@
 import {SubTask} from './subTask';
+import {TaskList} from './taskList';
 
 export class Task {
+  taskList: TaskList;
   id: string;
   title: string;
   updated: Date;
   selfLink: string;
-  parent?: string; // parent task's id
   position: string;
-  notes?: string;
   status: string; // needsAction, completed
   completed: boolean;
   completedAt: Date;
   hidden: boolean;
-  dueDate?: Date;
+  deleted: boolean;
   links: Array<TaskLink>;
   subTasks: Array<SubTask>;
+  dueDate?: Date;
+  notes?: string;
+  parent?: string; // parent task's id
 
-  constructor (id: string,
-               title: string,
-               updated: Date,
-               selfLink: string,
-               parent: string,
-               position: string,
-               status: string,
-               completed: boolean,
-               completedAt: Date,
-               hidden: boolean,
-               links: Array<TaskLink>,
-               subTasks: Array<SubTask>,
-               dueDate?: Date,
-               notes?: string,
+  constructor (
+    taskList: TaskList,
+    id: string,
+    title: string,
+    updated: Date,
+    selfLink: string,
+    parent: string,
+    position: string,
+    status: string,
+    completed: boolean,
+    completedAt: Date,
+    hidden: boolean,
+    links: Array<TaskLink>,
+    subTasks: Array<SubTask>,
+    deleted: boolean,
+    dueDate?: Date,
+    notes?: string,
   ) {
+    this.taskList = taskList;
     this.id = id;
     this.title = title;
     this.updated = updated;
@@ -42,6 +49,7 @@ export class Task {
     this.completed = completed;
     this.completedAt = completedAt;
     this.hidden = hidden;
+    this.deleted = deleted;
     this.dueDate = dueDate;
     this.links = links;
     this.subTasks = subTasks;
