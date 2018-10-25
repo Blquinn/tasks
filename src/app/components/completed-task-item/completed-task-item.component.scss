@@ -1,0 +1,48 @@
+.task-notes {
+  width: 75%;
+}
+
+.task-title {
+  width: 75%;
+}
+
+.notes-header {
+  min-width: 0;
+}
+
+.notes-inner {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-panel-title {
+  min-width: 10em;
+}
+
+.task-panel-title-inner {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sub-task-container {
+  margin-left: 1em;
+}
+
+.sub-task-list {
+  //list-style-type: none;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+.sub-task-list li {
+}
+
+.completed-btn {
+  margin-bottom: 1em;
+}
+
+.strike-through {
+  text-decoration: line-through;
+}

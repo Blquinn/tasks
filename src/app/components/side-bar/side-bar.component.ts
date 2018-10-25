@@ -32,7 +32,7 @@ export class SideBarComponent implements OnInit {
     if (this.taskLists.length > 0) {
       maxID = Math.max.apply(Math, this.taskLists.map(tl => tl.id));
     }
-    const newList = new TaskList(maxID + 1, listName);
+    const newList = new TaskList('', listName, new Date(), listName);
     this.taskLists.push(newList);
     this.activateTaskList(newList);
   }
@@ -47,6 +47,10 @@ export class SideBarComponent implements OnInit {
         this.addNewList(result);
       }
     });
+  }
+
+  logOut() {
+    localStorage.removeItem('credentials');
   }
 
   openEditTaskListDialog(list: TaskList) {

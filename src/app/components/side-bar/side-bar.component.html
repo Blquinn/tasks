@@ -15,7 +15,7 @@
 
       <button mat-button [class.active]="active?.id === list.id"
               class="task-list-button"
-        (click)="activateTaskList(list)">{{list.name}}</button>
+        (click)="activateTaskList(list)">{{list.title}}</button>
     </mat-list-item>
   </mat-list>
 
@@ -23,4 +23,8 @@
 
   <button mat-button class="add-list-btn"
     (click)="openAddListDialog()">Add List<i class="material-icons">add</i></button>
+
 </div>
+
+<button mat-button class="log-out-btn"
+        (click)="logOut()"><i class="material-icons" title="Log Out">power_settings_new</i></button>

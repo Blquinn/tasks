@@ -1,7 +1,10 @@
+export interface GoogleTaskListResponse {
+  items: Array<GoogleTaskList>;
+}
+
 export interface GoogleTaskList {
   id: string;
-  etag: string;
   title: string;
-  updated: Date;
+  updated: string;
   selfLink: string;
 }

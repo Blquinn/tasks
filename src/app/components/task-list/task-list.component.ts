@@ -35,13 +35,14 @@ export class TaskListComponent implements OnInit {
   }
 
   addTask(newTask: NewTask) {
-    let maxTaskID: number;
-    if (this.activeList.tasks.length === 0) {
-      maxTaskID = -1;
-    } else {
-      maxTaskID = Math.max.apply(Math, this.activeList.tasks.concat(this.activeList.completedTasks).map(t => t.id));
-    }
-    this.activeList.tasks.push(new Task(maxTaskID + 1, newTask.title, newTask.notes, false, newTask.dueDate, []));
+    // let maxTaskID: number;
+    // if (this.activeList.tasks.length === 0) {
+    //   maxTaskID = -1;
+    // } else {
+    //   maxTaskID = Math.max.apply(Math, this.activeList.tasks.concat(this.activeList.completedTasks).map(t => t.id));
+    // }
+    // this.activeList.tasks.push(new Task(maxTaskID + 1, newTask.title, newTask.notes, false, newTask.dueDate, []));
+    // this.activeList.tasks.push(new Task(maxTaskID + 1, newTask.title, newTask.notes, false, newTask.dueDate, []));
   }
 
   onTaskCompleted(task: Task) {
@@ -49,7 +50,7 @@ export class TaskListComponent implements OnInit {
     this.activeList.completedTasks.push(task);
   }
 
-  onDeleteBtn(taskID: number) {
+  onDeleteBtn(taskID: string) {
     this.activeList.tasks = this.activeList.tasks.filter(t => t.id !== taskID);
   }
 

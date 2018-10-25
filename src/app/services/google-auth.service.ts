@@ -11,13 +11,14 @@ const GOOGLE_PROFILE_URL = 'https://www.googleapis.com/userinfo/v2/me';
 const GOOGLE_CLIENT_ID = '942814386422-453sqea4gnbqidoc2r0g0jsc9bnsd1gs.apps.googleusercontent.com';
 const GOOGLE_BUNDLE_ID = 'org.github.blquinn';
 const GOOGLE_REDIRECT_URI = `com.googleusercontent.apps.942814386422-453sqea4gnbqidoc2r0g0jsc9bnsd1gs:/oauth2callback`;
+const GOOGLE_AUTH_SCOPE = 'email profile https://www.googleapis.com/auth/tasks';
 
 const CREDENTIALS_KEY = 'credentials';
 
 export interface Credentials {
   refresh_token: string;
   expires_in: number;
-  expiry_date?: number | null;
+  expiry_date?: Date | null;
   access_token: string;
   token_type: string;
   id_token: string;
@@ -67,7 +68,8 @@ export class GoogleAuthService {
         response_type: 'code',
         redirect_uri: GOOGLE_REDIRECT_URI,
         client_id: GOOGLE_CLIENT_ID,
-        scope: 'profile email',
+        // scope: 'profile email',
+        scope: GOOGLE_AUTH_SCOPE,
       };
       const authUrl = `${GOOGLE_AUTHORIZATION_URL}?${qs.stringify(urlParams)}`;
 
@@ -115,24 +117,21 @@ export class GoogleAuthService {
   async googleSignIn(): Promise<Credentials> {
     const code = await this.signInWithPopup();
     const tokens = await this.fetchAccessTokens(code);
-    // const {id, email, name} = await this.fetchGoogleProfile(tokens.access_token);
-    // const d: GoogleUser = {
-    //   id,
-    //   email,
-    //   displayName: name,
-    //   credentials: tokens,
-    // };
+    const d = new Date();
+    d.setSeconds(d.getSeconds() + tokens.expires_in - 60);
+    tokens.expiry_date = d;
     localStorage.setItem(CREDENTIALS_KEY, JSON.stringify(tokens));
     return tokens;
   }
 
   async getCredentials(): Promise<Credentials> {
-    // const creds = localStorage.getItem(CREDENTIALS_KEY);
-    // if (creds !== null) {
-    //   return JSON.parse(creds);
-    // }
-
-    return await this.googleSignIn();
+    const creds = localStorage.getItem(CREDENTIALS_KEY);
+    if (creds === null || creds === undefined) {
+      console.log('signing in with google');
+      return this.googleSignIn();
+    }
+    console.log('retrieved credentials from localstorage');
+    return new Promise<Credentials>(resolve => resolve(JSON.parse(creds)));
   }
 
   // async getOAuthClient(): Promise<OAuth2Client> {

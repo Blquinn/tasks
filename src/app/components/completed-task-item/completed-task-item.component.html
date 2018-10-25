@@ -1,0 +1,55 @@
+<mat-expansion-panel #itemExpPanel>
+  <mat-expansion-panel-header>
+    <mat-panel-title class="task-panel-title strike-through">
+      <div class="task-panel-title-inner">
+        {{task.title}}
+      </div>
+    </mat-panel-title>
+    <mat-panel-description class="notes-header">
+      <div class="notes-inner">{{task.notes}}</div>
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+
+  <div>
+    <mat-form-field class="task-title">
+      <input placeholder="Task" type="text" title="Title"
+             value="{{task.title}}" matInput
+             [readonly]="true"
+             [(ngModel)]="task.title">
+    </mat-form-field>
+  </div>
+
+  <div>
+    <mat-form-field class="task-notes">
+      <textarea type="text" title="Notes"
+                placeholder="Notes"
+                value="{{task.notes}}"
+                [readonly]="true"
+                matInput></textarea>
+    </mat-form-field>
+  </div>
+
+  <div>
+    <mat-form-field>
+      <input matInput
+             [readonly]="true"
+             [(ngModel)]="task.dueDate"
+             [matDatepicker]="picker"
+             placeholder="Choose a due date">
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </div>
+
+  <div>
+    <p>Sub-tasks: <span *ngIf="task.subTasks.length == 0">None</span></p>
+
+    <div class="sub-task-container">
+      <ul class="sub-task-list">
+        <li *ngFor="let subTask of task.subTasks">
+          <span>{{subTask.title}}</span>
+          <mat-icon *ngIf="subTask.completed">check</mat-icon>
+        </li>
+      </ul>
+    </div>
+  </div>
+</mat-expansion-panel>

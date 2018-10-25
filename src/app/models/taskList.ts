@@ -1,12 +1,14 @@
-import {Task} from './task';
-
 export class TaskList {
-  id: number;
-  name: string;
+  id: string;
+  title: string;
+  updated: Date;
+  selfLink: string;
 
-  constructor(id: number, name: string) {
+  constructor(id: string, title: string, updated: Date, selfLink: string) {
     this.id = id;
-    this.name = name;
+    this.title = title;
+    this.updated = updated;
+    this.selfLink = selfLink;
   }
 
 }
