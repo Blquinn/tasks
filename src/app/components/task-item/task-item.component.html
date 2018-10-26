@@ -48,25 +48,29 @@
     <p>Sub-tasks: <span *ngIf="task.subTasks.length == 0">None</span></p>
 
     <div class="sub-task-container">
-      <ul class="sub-task-list">
-        <li *ngFor="let subTask of task.subTasks">
-          <mat-checkbox
-            [checked]="subTask.completed"
-            [(ngModel)]="subTask.completed">{{subTask.title}}</mat-checkbox>
-        </li>
-      </ul>
-      <mat-form-field *ngIf="!task.completed">
-        <input type="text" matInput placeholder="Add Sub-task (Press enter)"
-               (keyup.enter)="onSubTaskKey($event)"
-               [(ngModel)]="subTaskEditField">
-      </mat-form-field>
+      <app-task-item *ngFor="let subTask of task.subTasks"
+                     [task]="subTask"></app-task-item>
+      <!--<ul class="sub-task-list">-->
+        <!--<li *ngFor="let subTask of task.subTasks">-->
+          <!--<mat-checkbox-->
+            <!--[checked]="subTask.completed"-->
+            <!--[(ngModel)]="subTask.completed">{{subTask.title}}</mat-checkbox>-->
+        <!--</li>-->
+      <!--</ul>-->
+      <!--<mat-form-field>-->
+
+        <!--<input type="text" matInput placeholder="Add Sub-task (Press enter)"-->
+               <!--(keyup.enter)="onSubTaskKey($event)"-->
+               <!--[(ngModel)]="subTaskEditField">-->
+      <!--</mat-form-field>-->
+      <button mat-button (click)="openAddTaskDialog()">Add Sub task</button>
 
     </div>
   </div>
 
   <div *ngIf="!task.completed">
     <button mat-button class="save-btn"
-            (click)="itemExpPanel.expanded = false; onSave()"
+            (click)="itemExpPanel.expanded = false; save()"
             color="alert">Save</button>
   </div>
 </mat-expansion-panel>

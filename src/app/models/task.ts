@@ -14,7 +14,8 @@ export class Task {
   hidden: boolean;
   deleted: boolean;
   links: Array<TaskLink>;
-  subTasks: Array<SubTask>;
+  // subTasks: Array<SubTask>;
+  subTasks: Array<Task>;
   dueDate?: Date;
   notes?: string;
   parent?: string; // parent task's id
@@ -32,7 +33,7 @@ export class Task {
     completedAt: Date,
     hidden: boolean,
     links: Array<TaskLink>,
-    subTasks: Array<SubTask>,
+    subTasks: Array<Task>,
     deleted: boolean,
     dueDate?: Date,
     notes?: string,

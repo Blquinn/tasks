@@ -25,6 +25,14 @@ export interface Credentials {
   scope: string;
 }
 
+export interface RefreshResponse {
+  access_token: string;
+  expires_in: number;
+  scope: string;
+  token_type: string;
+  id_token: string;
+}
+
 export interface GoogleUser {
   id: string;
   email: string;
@@ -38,6 +46,14 @@ export interface GoogleUser {
 export class GoogleAuthService {
 
   constructor() { }
+
+  static getCredentialsLocal(): Credentials {
+    const j = localStorage.getItem(CREDENTIALS_KEY);
+    if (j === undefined) {
+      return null;
+    }
+    return JSON.parse(j);
+  }
 
   signInWithPopup () {
     return new Promise((resolve, reject) => {
@@ -124,6 +140,44 @@ export class GoogleAuthService {
     return tokens;
   }
 
+  async performRefresh(currentCreds: Credentials): Promise<Credentials> {
+    const response = await axios.post(GOOGLE_TOKEN_URL, qs.stringify({
+      client_id: GOOGLE_CLIENT_ID,
+      grant_type: 'refresh_token',
+      refresh_token: currentCreds.refresh_token,
+    }), {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+    if (response.status !== 200) {
+      throw new Error('Failed to refresh token');
+    }
+    return response.data;
+  }
+
+  async refreshToken(): Promise<Credentials> {
+    const creds = localStorage.getItem(CREDENTIALS_KEY);
+    if (creds === null || creds === undefined) {
+      console.log('signing in with google');
+      return this.googleSignIn();
+    }
+    console.log('retrieved credentials from localstorage');
+    const currentCreds: Credentials = JSON.parse(creds);
+    let newCreds: RefreshResponse;
+    try {
+      newCreds = await this.performRefresh(currentCreds);
+    } catch (err) {
+      localStorage.removeItem(CREDENTIALS_KEY);
+      return this.googleSignIn();
+      // TODO: Handle this properly
+    }
+
+    Object.assign(currentCreds, newCreds);
+    localStorage.setItem(CREDENTIALS_KEY, JSON.stringify(currentCreds));
+    return currentCreds;
+  }
+
   async getCredentials(): Promise<Credentials> {
     const creds = localStorage.getItem(CREDENTIALS_KEY);
     if (creds === null || creds === undefined) {
@@ -132,6 +186,10 @@ export class GoogleAuthService {
     }
     console.log('retrieved credentials from localstorage');
     return new Promise<Credentials>(resolve => resolve(JSON.parse(creds)));
+  }
+
+  async clearCredentials() {
+    localStorage.removeItem(CREDENTIALS_KEY);
   }
 
   // async getOAuthClient(): Promise<OAuth2Client> {

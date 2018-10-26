@@ -4,6 +4,8 @@ import {MatDialog} from '@angular/material';
 import {NewTaskDialogComponent} from '../new-task-dialog/new-task-dialog.component';
 import {NewTask} from '../../models/newTask';
 import {TaskList} from '../../models/taskList';
+import {GoogleTasksService} from '../../services/google-tasks.service';
+import {CreateTaskDto} from '../../models/create-task-dto';
 
 
 @Pipe({name: 'completedTaskPipe'})
@@ -32,7 +34,10 @@ export class TaskListComponent implements OnInit {
 
   editingTask?: Task;
 
-  constructor(private dialog: MatDialog) { }
+  constructor(
+    private dialog: MatDialog,
+    private tasksService: GoogleTasksService
+  ) { }
 
   ngOnInit() {
   }
@@ -51,18 +56,24 @@ export class TaskListComponent implements OnInit {
   }
 
   addTask(newTask: NewTask) {
-    // let maxTaskID: number;
-    // if (this.activeList.tasks.length === 0) {
-    //   maxTaskID = -1;
-    // } else {
-    //   maxTaskID = Math.max.apply(Math, this.activeList.tasks.concat(this.activeList.completedTasks).map(t => t.id));
-    // }
-    // this.activeList.tasks.push(new Task(maxTaskID + 1, newTask.title, newTask.notes, false, newTask.dueDate, []));
-    // this.activeList.tasks.push(new Task(maxTaskID + 1, newTask.title, newTask.notes, false, newTask.dueDate, []));
+    this.tasksService.addTask(this.activeList, newTask)
+      .subscribe(task => {
+        console.log('pushing new task');
+        console.log(task);
+        // this.activeList.tasks.push(task);
+        this.activeList.tasks = this.activeList.tasks.concat(task);
+      });
   }
 
-  onTaskCompleted(task: Task) {
-    task.completed = true;
+  onTaskUpdated(task: Task) {
+    this.tasksService.updateTask(task).subscribe(newTask => {
+      const idx = this.activeList.tasks.findIndex(t => t.id === newTask.id);
+      if (idx === undefined || idx === null) { return; }
+
+      this.activeList.tasks = this.activeList.tasks.slice(0, idx)
+        .concat(newTask)
+        .concat(this.activeList.tasks.slice(idx + 1));
+    });
   }
 
   onDeleteBtn(taskID: string) {

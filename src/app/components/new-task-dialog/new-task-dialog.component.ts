@@ -1,7 +1,10 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {Task} from '../../models/task';
 import {NewTask} from '../../models/newTask';
+
+export interface INewTaskInput {
+  parentId?: string;
+}
 
 @Component({
   selector: 'app-new-task-dialog',
@@ -13,9 +16,13 @@ export class NewTaskDialogComponent implements OnInit {
   newTask: NewTask;
 
   constructor(
-    public dialogRef: MatDialogRef<NewTaskDialogComponent>
+    public dialogRef: MatDialogRef<NewTaskDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data?: INewTaskInput
   ) {
-    this.newTask = new NewTask();
+    this.newTask = {
+      title: '',
+      parent: data === null ? null : data.parentId,
+    };
   }
 
   ngOnInit() {

@@ -5,7 +5,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 
-import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 
 import {AppRoutingModule} from './app-routing.module';
 // NG Translate
@@ -29,6 +29,7 @@ import { NewTaskListComponent } from './components/new-task-list/new-task-list.c
 import { DeleteTaskListDialogComponent } from './components/delete-task-list-dialog/delete-task-list-dialog.component';
 import { EditTaskListDialogComponent } from './components/edit-task-list-dialog/edit-task-list-dialog.component';
 import { CompletedTaskItemComponent } from './components/completed-task-item/completed-task-item.component';
+import {AuthInterceptor} from './services/auth-interceptor';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -77,6 +78,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     NativeDateAdapter,
     { provide: MAT_DIALOG_DATA, useValue: {} },
     { provide: MatDialogRef, useValue: {} },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })

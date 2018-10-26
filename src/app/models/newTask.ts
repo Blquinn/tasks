@@ -1,11 +1,9 @@
-export class NewTask {
+import {GoogleTaskLink} from './googletasks/GoogleTasks';
+
+export interface NewTask {
   title: string;
   notes?: string;
+  parent?: string;
   dueDate?: Date;
-
-  constructor() {
-    this.title = '';
-    this.notes = null;
-    this.dueDate = null;
-  }
+  links?: Array<GoogleTaskLink>;
 }

@@ -12,7 +12,7 @@
           <app-task-item
             *ngFor="let task of activeList.tasks | incompleteTaskPipe"
             [task]="task"
-            (taskCompleted)="onTaskCompleted(task)"></app-task-item>
+            (taskUpdated)="onTaskUpdated(task)"></app-task-item>
         </mat-accordion>
       </div>
 

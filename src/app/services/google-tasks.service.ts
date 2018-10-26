@@ -8,6 +8,8 @@ import {TaskList} from '../models/taskList';
 import {Task} from '../models/task';
 import {GoogleTask, GoogleTasksResponse} from '../models/googletasks/GoogleTasks';
 import qs from 'qs';
+import {CreateTaskDto} from '../models/create-task-dto';
+import {NewTask} from '../models/newTask';
 
 const BASE_URL = 'https://www.googleapis.com/tasks/v1';
 
@@ -46,7 +48,7 @@ export class GoogleTasksService {
     };
   }
 
-  private doRequest<T>(method: string, operation: string, path: string, query?: {}): Observable<T> {
+  private doRequest<T>(method: string, operation: string, path: string, query?: {}, body?: any): Observable<T> {
     console.log('performing request to ' + path);
     return this.getCredentials()
       .pipe(
@@ -60,7 +62,9 @@ export class GoogleTasksService {
             return this.http.request<T>(method, url, {
               headers: {
                 Authorization: `${creds.token_type} ${creds.access_token}`,
+                'Content-Type': 'application/json',
               },
+              body: body
             });
         }),
         catchError(this.handleError(operation, null))
@@ -78,7 +82,7 @@ export class GoogleTasksService {
   }
 
   private mapTask(taskList: TaskList, gt: GoogleTask): Task {
-    const completed = gt.status === 'complete';
+    const completed = gt.status === 'completed';
     const due = (gt.due === null || gt.due === undefined) ? null : new Date(gt.due);
     return new Task(
       taskList,
@@ -90,7 +94,8 @@ export class GoogleTasksService {
   }
 
   getTasks(taskList: TaskList): Observable<Array<Task>> {
-    return this.doRequest<GoogleTasksResponse>('GET', 'get tasks', `lists/${taskList.id}/tasks`, {showCompleted: false})
+    // {showCompleted: false})
+    return this.doRequest<GoogleTasksResponse>('GET', 'get tasks', `lists/${taskList.id}/tasks`)
       .pipe(
         map(res => {
           if (res.items === undefined || res.items === null) { return []; }
@@ -102,7 +107,6 @@ export class GoogleTasksService {
   }
 
   updateTask(task: Task): Observable<Task> {
-    console.log(task);
     const googleTask: Partial<GoogleTask> = {
       id: task.id,
       title: task.title,
@@ -116,12 +120,27 @@ export class GoogleTasksService {
       hidden: task.hidden,
       links: task.links
     };
-    return this.doRequest<GoogleTask>('PATCH', 'update task', `lists/${task.taskList.id}/tasks/${task.id}`)
+    return this.doRequest<GoogleTask>('PATCH', 'update task', `lists/${task.taskList.id}/tasks/${task.id}`, null, googleTask)
       .pipe(
         map(gTask => {
           return this.mapTask(task.taskList, gTask);
         })
       );
+  }
+
+  addTask(taskList: TaskList, newTask: NewTask): Observable<Task> {
+    const taskDTO: CreateTaskDto = {
+      title: newTask.title,
+      parent: newTask.parent,
+      notes: newTask.notes,
+      due: (newTask.dueDate === undefined || newTask.dueDate === null) ? null : newTask.dueDate.toISOString(),
+      links: newTask.links,
+    };
+    return this.doRequest<GoogleTask>('POST', 'insert task',
+      `lists/${taskList.id}/tasks/`, null, taskDTO).pipe(
+      map(gtask => this.mapTask(taskList, gtask)
+      )
+    );
   }
 
 }
