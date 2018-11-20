@@ -13,25 +13,30 @@ import {catchError} from 'rxjs/operators';
 })
 export class HomeComponent implements OnInit {
 
-  taskLists: Array<TaskList>;
-
+  taskLists?: Array<TaskList>;
   activeList?: TaskList;
-  // activeTasks?: TaskListLists;
+  loadingTaskList = false;
+  loggedIn = false;
 
-  constructor(private tasks: GoogleTasksService) {
+  constructor(private tasksService: GoogleTasksService) {
   }
 
-
   ngOnInit() {
-    this.tasks.getTaskLists()
+    // try to refresh token
+  }
+
+  getTaskLists() {
+    return this.tasksService.getTaskLists()
       .pipe(catchError(this.handleError('get task lists', [])))
-      .subscribe((tasks: Array<TaskList>) => {
-        this.taskLists = tasks;
+      .subscribe(taskLists => {
+        this.loggedIn = true;
+        this.taskLists = taskLists;
       });
   }
 
-  private handleError<T> (operation = 'operation', result?: T) {
+  private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
+      this.loadingTaskList = false;
       // TODO: send the error to remote logging infrastructure
       console.error(error); // log to console instead
 
@@ -43,21 +48,25 @@ export class HomeComponent implements OnInit {
     };
   }
 
+  logOut() {
+    this.tasksService.clearCredentials();
+    this.loggedIn = false;
+    this.activeList = null;
+    this.taskLists = null;
+  }
 
   onActiveList(list?: TaskList) {
+    this.loadingTaskList = true;
+
     if (list === null) {
       this.activeList = null;
-      // this.activeTasks = null;
     } else {
       this.activeList = list;
-      this.tasks.getTasks(list).pipe(
+      this.tasksService.getTasks(list).pipe(
         catchError(this.handleError('get tasks', []))
       ).subscribe((tasks: Array<Task>) => {
+        this.loadingTaskList = false;
         list.tasks = tasks;
-        // this.activeTasks = new TaskListLists(
-        //   tasks.filter(t => t.completed === false),
-        //   tasks.filter(t => t.completed === true),
-        // );
       });
     }
   }

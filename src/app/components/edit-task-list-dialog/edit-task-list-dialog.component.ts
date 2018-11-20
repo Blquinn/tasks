@@ -10,10 +10,15 @@ import {TaskList} from '../../models/taskList';
 export class EditTaskListDialogComponent implements OnInit {
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public taskList: TaskList
+    @Inject(MAT_DIALOG_DATA) public taskList: TaskList,
+    public dialogRef: MatDialogRef<EditTaskListDialogComponent>
   ) { }
 
   ngOnInit() {
+  }
+
+  onSave() {
+    return this.dialogRef.close(this.taskList);
   }
 
 }

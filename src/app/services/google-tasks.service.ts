@@ -2,14 +2,15 @@ import {Injectable} from '@angular/core';
 import {Credentials, GoogleAuthService} from './google-auth.service';
 import {HttpClient} from '@angular/common/http';
 import {from, Observable, of} from 'rxjs';
-import {GoogleTaskListResponse} from '../models/googletasks/GoogleTaskList';
-import {catchError, flatMap, map, tap} from 'rxjs/operators';
+import {GoogleTaskList, GoogleTaskListResponse} from '../models/googletasks/GoogleTaskList';
+import {catchError, flatMap, map, take, tap} from 'rxjs/operators';
 import {TaskList} from '../models/taskList';
 import {Task} from '../models/task';
 import {GoogleTask, GoogleTasksResponse} from '../models/googletasks/GoogleTasks';
 import qs from 'qs';
 import {CreateTaskDto} from '../models/create-task-dto';
 import {NewTask} from '../models/newTask';
+import {MatSnackBar} from '@angular/material';
 
 const BASE_URL = 'https://www.googleapis.com/tasks/v1';
 
@@ -22,7 +23,8 @@ export class GoogleTasksService {
 
   constructor(
     private authService: GoogleAuthService,
-    private http: HttpClient) { }
+    private http: HttpClient,
+    private snackBar: MatSnackBar) { }
 
   private getCredentials(): Observable<Credentials> {
     if (this.credentials === null) {
@@ -44,6 +46,7 @@ export class GoogleTasksService {
     return (error: any): Observable<T> => {
       console.error(`received error while performing operation: ${operation}`);
       console.error(error);
+      this.snackBar.open(`Failed to ${operation}`);
       return of(result as T);
     };
   }
@@ -71,6 +74,11 @@ export class GoogleTasksService {
       );
   }
 
+  clearCredentials() {
+    localStorage.removeItem('credentials');
+    this.credentials = null;
+  }
+
   getTaskLists(): Observable<Array<TaskList>> {
     console.log('retrieving task list');
     return this.doRequest<GoogleTaskListResponse>('GET', 'get task lists', 'users/@me/lists')
@@ -78,6 +86,40 @@ export class GoogleTasksService {
         map(res => {
           return res.items.map(l => new TaskList(l.id, l.title, new Date(l.updated), l.selfLink));
         })
+      );
+  }
+
+  createTaskList(taskListTitle: string): Observable<TaskList> {
+    console.log('creating new task list');
+    return this.doRequest<GoogleTaskList>('POST', 'create task list', 'users/@me/lists', null, {
+      title: taskListTitle
+    })
+      .pipe(
+        map(l => new TaskList(l.id, l.title, new Date(l.updated), l.selfLink))
+      );
+  }
+
+  updateTaskList(taskList: TaskList): Observable<TaskList> {
+    const googleTaskList: Partial<GoogleTaskList> = {
+      title: taskList.title,
+    };
+    console.log('updating new task list');
+    return this.doRequest<GoogleTaskList>('PATCH', 'update task list', `users/@me/lists/${taskList.id}`, null, googleTaskList)
+      .pipe(
+        map(l => new TaskList(l.id, l.title, new Date(l.updated), l.selfLink))
+      );
+  }
+
+  deleteTaskList(taskList: TaskList): Observable<void> {
+    console.log('deleting task list');
+    return this.doRequest<void>('DELETE', 'delete task list', `users/@me/lists/${taskList.id}`);
+  }
+
+  clearCompletedTasks(taskList: TaskList): Observable<void> {
+    console.log('clearing task list');
+    return this.doRequest<void>('POST', 'clear completed tasks', `lists/${taskList.id}/clear`)
+      .pipe(
+        catchError(this.handleError('clear task list', null))
       );
   }
 
@@ -94,23 +136,41 @@ export class GoogleTasksService {
   }
 
   getTasks(taskList: TaskList): Observable<Array<Task>> {
-    // {showCompleted: false})
     return this.doRequest<GoogleTasksResponse>('GET', 'get tasks', `lists/${taskList.id}/tasks`)
       .pipe(
         map(res => {
-          if (res.items === undefined || res.items === null) { return []; }
-          return res.items.map(gt => {
-            return this.mapTask(taskList, gt);
-          });
+          if (res === null || res.items === undefined || res.items === null) { return []; }
+          const tasks = res.items.map(gt => this.mapTask(taskList, gt));
+          console.log(tasks);
+          return this.buildTasksTree(tasks);
         })
       );
+  }
+
+  buildTasksTree(tasks: Array<Task>): Array<Task> {
+    const taskMap = tasks.reduce((m, obj) => {
+      m[obj.id] = obj;
+      return m;
+    }, {});
+
+    tasks.forEach(t => {
+      const proposedParent: Task = taskMap[t.parentId];
+      if (proposedParent !== undefined) {
+        t.parent = proposedParent;
+        proposedParent.subTasks.push(t);
+      }
+    });
+
+    return Object.keys(taskMap)
+      .map(key => taskMap[key])
+      .filter(t => t.parent === undefined || t.parent === null);
   }
 
   updateTask(task: Task): Observable<Task> {
     const googleTask: Partial<GoogleTask> = {
       id: task.id,
       title: task.title,
-      parent: task.parent,
+      parent: task.parentId,
       position: task.position,
       notes: task.notes,
       status: task.completed === true ? 'completed' : 'needsAction',
@@ -136,8 +196,9 @@ export class GoogleTasksService {
       due: (newTask.dueDate === undefined || newTask.dueDate === null) ? null : newTask.dueDate.toISOString(),
       links: newTask.links,
     };
+    const query = taskDTO.parent === null ? {} : {parent: taskDTO.parent};
     return this.doRequest<GoogleTask>('POST', 'insert task',
-      `lists/${taskList.id}/tasks/`, null, taskDTO).pipe(
+      `lists/${taskList.id}/tasks/`, query, taskDTO).pipe(
       map(gtask => this.mapTask(taskList, gtask)
       )
     );

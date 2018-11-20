@@ -6,6 +6,7 @@ import {NewTask} from '../../models/newTask';
 import {TaskList} from '../../models/taskList';
 import {GoogleTasksService} from '../../services/google-tasks.service';
 import {CreateTaskDto} from '../../models/create-task-dto';
+import {flatMap, map} from 'rxjs/operators';
 
 
 @Pipe({name: 'completedTaskPipe'})
@@ -21,7 +22,6 @@ export class IncompleteTasksPipe implements PipeTransform {
     return tasks.filter(t => t.completed === false);
   }
 }
-
 
 @Component({
   selector: 'app-task-list',
@@ -48,8 +48,7 @@ export class TaskListComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result?: NewTask) => {
-      console.log(result);
-      if (result != null) {
+      if (result !== undefined && result !== null) {
         this.addTask(result);
       }
     });
@@ -58,9 +57,6 @@ export class TaskListComponent implements OnInit {
   addTask(newTask: NewTask) {
     this.tasksService.addTask(this.activeList, newTask)
       .subscribe(task => {
-        console.log('pushing new task');
-        console.log(task);
-        // this.activeList.tasks.push(task);
         this.activeList.tasks = this.activeList.tasks.concat(task);
       });
   }
@@ -76,16 +72,16 @@ export class TaskListComponent implements OnInit {
     });
   }
 
-  onDeleteBtn(taskID: string) {
-    this.activeList.tasks = this.activeList.tasks.filter(t => t.id !== taskID);
+  onSubTaskAdded(parent: Task, child: Task) {
+    parent.subTasks.push(child);
   }
 
-  onEditBtn(task: Task) {
-    if (this.editingTask && task.id === this.editingTask.id) {
-      this.editingTask = null;
-      return;
-    }
-    this.editingTask = task;
+  clearCompletedTasks() {
+    this.tasksService.clearCompletedTasks(this.activeList).pipe(
+      flatMap(_ => this.tasksService.getTasks(this.activeList))
+    ).subscribe(tasks => {
+      this.activeList.tasks = tasks;
+    });
   }
 
 }

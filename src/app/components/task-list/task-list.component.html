@@ -7,28 +7,36 @@
   </div>
 
   <div *ngIf="activeList.tasks !== undefined && activeList.tasks !== null">
-      <div class="active-task-list">
-        <mat-accordion>
-          <app-task-item
-            *ngFor="let task of activeList.tasks | incompleteTaskPipe"
-            [task]="task"
-            (taskUpdated)="onTaskUpdated(task)"></app-task-item>
-        </mat-accordion>
-      </div>
+    <div *ngIf="activeList.tasks.length === 0" class="empty-task-list">Task list is empty, add something!</div>
+    <div class="active-task-list">
+      <mat-accordion>
+        <app-task-item
+          *ngFor="let task of activeList.tasks | incompleteTaskPipe"
+          [task]="task"
+          (subTaskAdded)="onSubTaskAdded(task, $event)"
+          (taskUpdated)="onTaskUpdated(task)"></app-task-item>
+      </mat-accordion>
+    </div>
 
-      <div class="completed-tasks-container active-task-list" *ngIf="(activeList.tasks | completedTaskPipe).length > 0">
+    <div *ngIf="(activeList.tasks | completedTaskPipe); let completedTasks">
+      <div class="completed-tasks-container active-task-list" *ngIf="completedTasks.length > 0">
         <mat-accordion>
           <mat-expansion-panel>
             <mat-expansion-panel-header>
-              <mat-panel-title>Completed Tasks</mat-panel-title>
+              <mat-panel-title>Completed Tasks ({{ completedTasks.length }})</mat-panel-title>
             </mat-expansion-panel-header>
-                <mat-accordion>
-                  <app-completed-task-item *ngFor="let task of (activeList.tasks | completedTaskPipe)"
-                    [task]="task"></app-completed-task-item>
-                </mat-accordion>
+            <mat-accordion>
+              <button mat-button (click)="clearCompletedTasks()" class="clear-tasks-btn">
+                Clear completed tasks
+                <i class="material-icons">clear_all</i>
+              </button>
+              <app-completed-task-item *ngFor="let task of completedTasks"
+                                       [task]="task"></app-completed-task-item>
+            </mat-accordion>
           </mat-expansion-panel>
         </mat-accordion>
       </div>
+    </div>
   </div>
 
 </div>

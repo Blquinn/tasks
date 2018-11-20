@@ -6,6 +6,7 @@ import {NewTaskDialogComponent} from '../new-task-dialog/new-task-dialog.compone
 import {NewTask} from '../../models/newTask';
 import {MatDialog} from '@angular/material';
 import {flatMap, map} from 'rxjs/operators';
+import {of} from 'rxjs';
 
 @Component({
   selector: 'app-task-item',
@@ -39,8 +40,8 @@ export class TaskItemComponent implements OnInit {
 
     dialogRef.afterClosed().pipe(
       flatMap((result?: NewTask) => {
-        if (result === null) {
-          return null;
+        if (result === undefined || result === null) {
+          return of(null);
         }
         return this.googleTasks.addTask(this.task.taskList, result);
       })

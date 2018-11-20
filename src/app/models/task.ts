@@ -18,7 +18,8 @@ export class Task {
   subTasks: Array<Task>;
   dueDate?: Date;
   notes?: string;
-  parent?: string; // parent task's id
+  parentId?: string; // parentId task's id
+  parent?: Task; // parentId task's id
 
   constructor (
     taskList: TaskList,
@@ -26,7 +27,7 @@ export class Task {
     title: string,
     updated: Date,
     selfLink: string,
-    parent: string,
+    parentId: string,
     position: string,
     status: string,
     completed: boolean,
@@ -37,13 +38,14 @@ export class Task {
     deleted: boolean,
     dueDate?: Date,
     notes?: string,
+    parent?: Task
   ) {
     this.taskList = taskList;
     this.id = id;
     this.title = title;
     this.updated = updated;
     this.selfLink = selfLink;
-    this.parent = parent;
+    this.parentId = parentId;
     this.position = position;
     this.notes = notes;
     this.status = status;
@@ -54,6 +56,7 @@ export class Task {
     this.dueDate = dueDate;
     this.links = links;
     this.subTasks = subTasks;
+    this.parent = parent;
   }
 
 }

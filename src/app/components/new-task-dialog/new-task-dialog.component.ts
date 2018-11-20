@@ -30,7 +30,7 @@ export class NewTaskDialogComponent implements OnInit {
 
   closeDialog() {
     if (this.newTask.title === '') {
-      this.dialogRef.close(null);
+      this.dialogRef.close();
     } else {
       this.dialogRef.close(this.newTask);
     }

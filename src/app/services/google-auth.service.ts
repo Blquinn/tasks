@@ -188,15 +188,4 @@ export class GoogleAuthService {
     return new Promise<Credentials>(resolve => resolve(JSON.parse(creds)));
   }
 
-  async clearCredentials() {
-    localStorage.removeItem(CREDENTIALS_KEY);
-  }
-
-  // async getOAuthClient(): Promise<OAuth2Client> {
-  //   const creds = await this.getCredentials();
-  //   const client = new OAuth2Client();
-  //   client.setCredentials(creds.credentials);
-  //   return client;
-  // }
-
 }

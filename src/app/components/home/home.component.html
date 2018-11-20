@@ -1,15 +1,43 @@
 <mat-sidenav-container class="sidenav-container" autosize>
-  <mat-sidenav mode="side" opened>
+  <mat-sidenav mode="side" [opened]="loggedIn">
     <app-side-bar
       [taskLists]="taskLists"
       (activeList)="onActiveList($event)"></app-side-bar>
   </mat-sidenav>
   <mat-sidenav-content class="hide-scroll sidenav-content">
-      <div *ngIf="activeList !== undefined && activeList !== null; else noActiveList">
-        <app-task-list [activeList]="activeList"></app-task-list>
+
+    <div *ngIf="loggedIn; else logInScreen">
+        <button mat-icon-button [matMenuTriggerFor]="menu" class="settings-menu">
+          <mat-icon id="settings-menu-icon">more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="logOut()">
+            <mat-icon>power_settings_new</mat-icon>
+            <span>Log out</span>
+          </button>
+        </mat-menu>
+
+        <div *ngIf="!loadingTaskList && activeList !== undefined && activeList !== null; else noActiveList">
+          <app-task-list [activeList]="activeList"></app-task-list>
+        </div>
+        <ng-template #noActiveList>
+          <h4 class="task-lists-header">Select a task list</h4>
+        </ng-template>
+
+        <div *ngIf="loadingTaskList" class="loading-spinner">
+          <mat-spinner></mat-spinner>
+        </div>
       </div>
-      <ng-template #noActiveList>
-        <h4 class="task-lists-header">Select a task list</h4>
-      </ng-template>
+
+    <ng-template #logInScreen>
+      <mat-card class="log-in-card">
+        <mat-card-content>
+          <p class="log-in-card-content">You're not logged in homie</p>
+          <button mat-button (click)="getTaskLists()">Log in</button>
+        </mat-card-content>
+      </mat-card>
+    </ng-template>
+
   </mat-sidenav-content>
 </mat-sidenav-container>
+

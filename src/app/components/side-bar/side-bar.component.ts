@@ -1,9 +1,11 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {TaskList} from '../../models/taskList';
 import {NewTaskListComponent} from '../new-task-list/new-task-list.component';
-import {MatDialog} from '@angular/material';
+import {MatDialog, MatSnackBar} from '@angular/material';
 import {EditTaskListDialogComponent} from '../edit-task-list-dialog/edit-task-list-dialog.component';
 import {DeleteTaskListDialogComponent} from '../delete-task-list-dialog/delete-task-list-dialog.component';
+import {GoogleTasksService} from '../../services/google-tasks.service';
+import {flatMap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-side-bar',
@@ -17,7 +19,9 @@ export class SideBarComponent implements OnInit {
   @Input() taskLists: Array<TaskList>;
   @Output() activeList: EventEmitter<TaskList> = new EventEmitter();
 
-  constructor(private dialog: MatDialog) { }
+  constructor(private dialog: MatDialog,
+              private snackBar: MatSnackBar,
+              private googleTasks: GoogleTasksService) { }
 
   ngOnInit() {
   }
@@ -28,13 +32,22 @@ export class SideBarComponent implements OnInit {
   }
 
   addNewList(listName: string) {
-    let maxID = -1;
-    if (this.taskLists.length > 0) {
-      maxID = Math.max.apply(Math, this.taskLists.map(tl => tl.id));
-    }
-    const newList = new TaskList('', listName, new Date(), listName);
-    this.taskLists.push(newList);
-    this.activateTaskList(newList);
+    this.googleTasks.createTaskList(listName)
+      .subscribe(taskList => {
+        this.taskLists = this.taskLists.concat(taskList);
+      });
+  }
+
+  updateList(taskList: TaskList) {
+    this.googleTasks.updateTaskList(taskList)
+      .subscribe(updatedList => {
+        const i = this.taskLists.findIndex(l => l.id === updatedList.id);
+        if (i === -1) {
+          this.taskLists.push(taskList);
+        } else {
+          this.taskLists[i] = updatedList;
+        }
+      });
   }
 
   openAddListDialog() {
@@ -43,14 +56,10 @@ export class SideBarComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result?: string) => {
-      if (result != null) {
+      if (result !== undefined && result !== null) {
         this.addNewList(result);
       }
     });
-  }
-
-  logOut() {
-    localStorage.removeItem('credentials');
   }
 
   openEditTaskListDialog(list: TaskList) {
@@ -59,7 +68,20 @@ export class SideBarComponent implements OnInit {
       data: list,
     });
 
-    dialogRef.afterClosed().subscribe((result: boolean) => {
+    dialogRef.afterClosed().subscribe((taskList?: TaskList) => {
+      if (taskList !== null && taskList !== undefined) {
+        this.googleTasks.updateTaskList(taskList)
+          .subscribe(updatedList => {
+            const i = this.taskLists.findIndex(l => l.id === updatedList.id);
+            if (i === -1) {
+              this.taskLists.push(updatedList);
+            } else {
+              this.taskLists[i] = updatedList;
+            }
+
+            this.snackBar.open('Saved task list');
+          });
+      }
     });
   }
 
@@ -69,15 +91,17 @@ export class SideBarComponent implements OnInit {
       data: list,
     });
 
-    dialogRef.afterClosed().subscribe((result: boolean) => {
-      if (result === true) {
-        this.taskLists = this.taskLists.filter(l => l.id !== list.id);
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed === true) {
+        this.googleTasks.deleteTaskList(list).subscribe(_ => {
+          this.taskLists = this.taskLists.filter(l => l.id !== list.id);
 
-        if (this.taskLists.length > 0) {
-          this.activateTaskList(this.taskLists[0]);
-        } else {
-          this.activateTaskList(null);
-        }
+          if (this.taskLists.length > 0) {
+            this.activateTaskList(this.taskLists[0]);
+          } else {
+            this.activateTaskList(null);
+          }
+        });
       }
     });
   }

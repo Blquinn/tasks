@@ -22,13 +22,20 @@ import {SideBarComponent} from './components/side-bar/side-bar.component';
 import {CompletedTasksPipe, IncompleteTasksPipe, TaskListComponent} from './components/task-list/task-list.component';
 import {TaskDetailComponent} from './components/task-detail/task-detail.component';
 import {MaterialComponentsModule} from './material-components.module';
-import {MAT_DIALOG_DATA, MatDialogRef, NativeDateAdapter} from '@angular/material';
+import {
+  MAT_DIALOG_DATA,
+  MAT_SNACK_BAR_DEFAULT_OPTIONS, MatCardModule,
+  MatDialogRef,
+  MatProgressSpinnerModule,
+  MatSnackBarModule,
+  NativeDateAdapter
+} from '@angular/material';
 import {NewTaskDialogComponent} from './components/new-task-dialog/new-task-dialog.component';
-import { TaskItemComponent } from './components/task-item/task-item.component';
-import { NewTaskListComponent } from './components/new-task-list/new-task-list.component';
-import { DeleteTaskListDialogComponent } from './components/delete-task-list-dialog/delete-task-list-dialog.component';
-import { EditTaskListDialogComponent } from './components/edit-task-list-dialog/edit-task-list-dialog.component';
-import { CompletedTaskItemComponent } from './components/completed-task-item/completed-task-item.component';
+import {TaskItemComponent} from './components/task-item/task-item.component';
+import {NewTaskListComponent} from './components/new-task-list/new-task-list.component';
+import {DeleteTaskListDialogComponent} from './components/delete-task-list-dialog/delete-task-list-dialog.component';
+import {EditTaskListDialogComponent} from './components/edit-task-list-dialog/edit-task-list-dialog.component';
+import {CompletedTaskItemComponent} from './components/completed-task-item/completed-task-item.component';
 import {AuthInterceptor} from './services/auth-interceptor';
 
 // AoT requires an exported function for factories
@@ -65,6 +72,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     HttpClientModule,
     AppRoutingModule,
     MaterialComponentsModule,
+    MatSnackBarModule,
+    MatProgressSpinnerModule,
+    MatCardModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -79,6 +89,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     { provide: MAT_DIALOG_DATA, useValue: {} },
     { provide: MatDialogRef, useValue: {} },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 4000 } },
   ],
   bootstrap: [AppComponent]
 })

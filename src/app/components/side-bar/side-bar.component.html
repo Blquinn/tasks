@@ -1,5 +1,7 @@
 <div id="side-bar">
+
   <h4 class="task-lists-header">Task Lists</h4>
+
   <mat-list class="task-list-list">
     <mat-list-item *ngFor="let list of taskLists" class="task-list-item">
       <div>
@@ -25,6 +27,3 @@
     (click)="openAddListDialog()">Add List<i class="material-icons">add</i></button>
 
 </div>
-
-<button mat-button class="log-out-btn"
-        (click)="logOut()"><i class="material-icons" title="Log Out">power_settings_new</i></button>
